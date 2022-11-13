@@ -7,7 +7,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.URLName;
 /**
- * Emulator to pass all mail sending stuff.. wait 0.2 second and print success message. 
+ * Emulator to pass all mail sending stuff.. wait 0.5 second and print success message. 
  * @author yaron
  *
  */
@@ -25,7 +25,7 @@ public class TransportEmulator extends Transport {
 	public static void send(Message msg) throws MessagingException {
 		System.out.println("server "+ msg.getSession().getProperties().getProperty("mail.smtp.host") +" sending Message to address: "+ msg.getAllRecipients()[0]);
 		try {
-			  Thread.sleep(200);
+			  Thread.sleep(500);
 			} catch (InterruptedException e) {
 			  Thread.currentThread().interrupt();
 			}
