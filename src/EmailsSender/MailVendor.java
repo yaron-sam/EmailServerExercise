@@ -11,13 +11,14 @@ import javax.mail.internet.MimeMessage;
 
 /**
  * 
- * vendor class hold all vandor's server information. when needed, can be extend
+ * MailVendor class implements MailSender that represent any vendor.
+ * The class hold all vendor's server information. when needed, can be extend
  * to specific vendor method (like special authentication and so on)
  * 
  * @author yaron
  * 
  */
-public class MailVendorSender {
+public class MailVendor implements MailSender {
 	private String hostAddress;
 	private String userName;
 	private String password;
@@ -25,7 +26,7 @@ public class MailVendorSender {
 
 	private Session session = null;
 	
-	public MailVendorSender(String hostAddress, String userName, String password, String postFix) {
+	public MailVendor(String hostAddress, String userName, String password, String postFix) {
 		updateHostAddress(hostAddress);
 		updateUserName(userName);
 		updatePassword(password);
@@ -51,6 +52,7 @@ public class MailVendorSender {
 		session = Session.getInstance(props, auth);
 	}
 
+	@Override
 	public void sendEmail(String toEmail, String fromEmail, String subject, String body) {
 		try {
 			MimeMessage msg = new MimeMessage(session);
@@ -76,7 +78,7 @@ public class MailVendorSender {
 	
 	@Override
 	public String toString() {
-		return "vendor [hostAddress=" + hostAddress + ", userName=" + userName + ", password=" + password + ", postFix="
+		return "MailVendor [hostAddress=" + hostAddress + ", userName=" + userName + ", password=" + password + ", postFix="
 				+ postFix + "]";
 	}
 
@@ -106,7 +108,7 @@ public class MailVendorSender {
 	}
 
 	public String getPostFix() {
-		return postFix;
+		return postFix.replaceAll("@","");
 	}
 
 	public void updatePostFix(String postFix) {
