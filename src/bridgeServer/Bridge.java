@@ -43,8 +43,15 @@ public class Bridge {
 		return instance;
 	}
 
-	
-	public void sendEmail(String toEmail, String fromEmail, String subject, String body) throws IllegalArgumentException{
+	/**
+	 * Send email with the following field. using MailVendor as generic sender. 
+	 * @param toEmail recipient mail address
+	 * @param fromEmail address that send the email.the server set which vendor need to send according to his domain.
+	 * @param subject 
+	 * @param body
+	 * @throws IllegalArgumentException throw exception when the domain isn't in the bridgeserver domains.
+	 */
+	public synchronized void sendEmail(String toEmail, String fromEmail, String subject, String body) throws IllegalArgumentException{
 		String domain = fromEmail.substring(fromEmail.indexOf("@") + 1);
 		try {
 			vendors.get(domain).sendEmail(toEmail, fromEmail, subject, body);
