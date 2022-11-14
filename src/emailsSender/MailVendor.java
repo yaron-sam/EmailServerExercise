@@ -1,9 +1,11 @@
 package emailsSender;
 import java.util.Date;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
@@ -53,13 +55,15 @@ public class MailVendor implements MailSender {
 	}
 
 	@Override
-	public void sendEmail(String toEmail, String fromEmail, String subject, String body) {
-		try {
+	public void sendEmail(String toEmail, String fromEmail, String subject, String body) throws MessagingException {
 			MimeMessage msg = new MimeMessage(session);
 			msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
 			msg.addHeader("format", "flowed");
 			msg.addHeader("Content-Transfer-Encoding", "8bit");
-
+			
+			if (!isValidEmail(fromEmail)) {
+				throw new IllegalArgumentException(fromEmail +" isn't vaid mail");
+			}
 			msg.setFrom(new InternetAddress(fromEmail));
 
 			msg.setSubject(subject, "UTF-8");
@@ -67,13 +71,13 @@ public class MailVendor implements MailSender {
 			msg.setText(body, "UTF-8");
 
 			msg.setSentDate(new Date());
-
+			
+			if (!isValidEmail(toEmail)) {
+				throw new IllegalArgumentException(toEmail +" isn't vaid mail");
+			}
 			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail, false));
 			
 			TransportEmulator.send(msg);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Override
@@ -82,7 +86,13 @@ public class MailVendor implements MailSender {
 				+ postFix + "]";
 	}
 
-
+	private static boolean isValidEmail(String emailAddress) {
+	    String regexPattern = "^(.+)@(\\S+)$";
+		return Pattern.compile(regexPattern)
+	      .matcher(emailAddress)
+	      .matches();
+	}
+	
 	public String getHostAddress() {
 		return hostAddress;
 	}
