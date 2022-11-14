@@ -1,8 +1,9 @@
+package bridgeServer;
 
 import java.util.HashMap;
 
-import EmailsSender.MailSender;
-import EmailsSender.MailVendor;
+import emailsSender.MailSender;
+import emailsSender.MailVendor;
 
 /**
  * Bridge Class.Hold one instance (singleton design pattern) that hold all MailVendor and response to send the mail throw the right account)  
