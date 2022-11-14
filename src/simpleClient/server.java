@@ -1,10 +1,8 @@
 package simpleClient;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.net.InetSocketAddress;
@@ -13,36 +11,29 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import java.util.concurrent.*;
-
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
 
-//TODO move thing from main finction to other function
+
+import bridgeServer.Bridge;
+
 
 public class server {
 	public static void main(String[] args) throws Exception {
 		int port = 8080;
 		HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+		Bridge bridgeServer = Bridge.getInstance();
 		ExecutorService executor = Executors.newCachedThreadPool();
 
 		server.createContext("/mail", request -> {
 			Runnable runnable = () -> {
 				String res = "good response";
 				try {
-					System.out.println("got request with context: /mail");
+//					System.out.println("got request with path: /mail");
 
 					String method = request.getRequestMethod();
-					System.out.println("method: " + method);
 					if (!method.equals("POST")) {
 						throw new IllegalArgumentException("The server don't now how to handle" + method);
 					}
@@ -52,7 +43,6 @@ public class server {
 					BufferedReader br = new BufferedReader(isr);
 
 					// From now on, the right way of moving from bytes to utf-8 characters:
-
 					int b;
 					StringBuilder buf = new StringBuilder(512);
 					while ((b = br.read()) != -1) {
@@ -64,14 +54,16 @@ public class server {
 
 					// parsing url srting. from
 					// https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
-					Map<String, String> body;
-					body = splitQuery(buf.toString());
-					System.out.println(body);
+					Map<String, String> reqBody;
+					reqBody = splitQuery(buf.toString());
+					
+					System.out.println("request body:" + reqBody);
 
-					// TODO handle mail sending
+					bridgeServer.sendEmail(reqBody.get("to"), reqBody.get("from"), "subject", reqBody.get("body"));
 
 				} catch (Exception ex) {
 					res = "Sorry, an error occured: " + ex;
+					System.err.println(res);
 				}
 
 				request.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
@@ -91,8 +83,7 @@ public class server {
 		});
 
 		server.createContext("/", request -> {
-			final String input = request.getRequestURI().getQuery();
-			System.out.println("[file] The input is: " + input);
+//			System.out.println("got request with root path");
 			String fileName = "client.html";
 			System.out.println("Got new file-request: " + fileName);
 			Path path = Paths.get("client", fileName);
@@ -125,4 +116,5 @@ public class server {
 		}
 		return query_pairs;
 	}
+	
 }
