@@ -20,7 +20,7 @@ import com.sun.net.httpserver.HttpServer;
 import bridgeServer.Bridge;
 
 
-public class server {
+public class Server {
 	public static void main(String[] args) throws Exception {
 		int port = 8080;
 		HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
@@ -30,6 +30,8 @@ public class server {
 		server.createContext("/mail", request -> {
 			Runnable runnable = () -> {
 				String res = "good response";
+				Map<String, String> reqBody = null;
+
 				try {
 //					System.out.println("got request with path: /mail");
 
@@ -52,17 +54,11 @@ public class server {
 					br.close();
 					isr.close();
 
-					// parsing url srting. from
-					// https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
-					Map<String, String> reqBody;
 					reqBody = splitQuery(buf.toString());
-					
 					System.out.println("request body:" + reqBody);
-
-					bridgeServer.sendEmail(reqBody.get("to"), reqBody.get("from"), "subject", reqBody.get("body"));
-
+					
 				} catch (Exception ex) {
-					res = "Sorry, an error occured: " + ex;
+					res = "an error occured: " + ex;
 					System.err.println(res);
 				}
 
@@ -77,6 +73,12 @@ public class server {
 					System.out.println("Cannot send response to client");
 					ex.printStackTrace();
 				}
+				try {
+					bridgeServer.sendEmail(reqBody.get("to"), reqBody.get("from"), "subject", reqBody.get("body"));
+				} catch (Exception e) {
+					System.err.println("error during mail sending" + e);
+				}
+
 			};
 
 			executor.execute(runnable);
@@ -105,7 +107,13 @@ public class server {
 		System.out.println("Try http://localhost:" + port);
 		server.start();
 	}
-
+/**
+ * parsing url string. 
+ * from https://stackoverflow.com/questions/13592236/parse-a-uri-string-into-name-value-collection
+ * @param query
+ * @return
+ * @throws UnsupportedEncodingException
+ */
 	public static Map<String, String> splitQuery(String query) throws UnsupportedEncodingException {
 		Map<String, String> query_pairs = new LinkedHashMap<String, String>();
 		String[] pairs = query.split("&");
