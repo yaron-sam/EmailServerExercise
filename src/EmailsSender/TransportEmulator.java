@@ -23,7 +23,7 @@ public class TransportEmulator extends Transport {
 	}
 	
 	public static void send(Message msg) throws MessagingException {
-		System.out.println("server "+ msg.getSession().getProperties().getProperty("mail.smtp.host") +" sending Message to address: "+ msg.getAllRecipients()[0]);
+		System.out.println("server "+ msg.getSession().getProperties().getProperty("mail.smtp.host") +" sending Message from address: "+msg.getFrom()[0] +" to address: "+ msg.getAllRecipients()[0]);
 		try {
 			  Thread.sleep(500);
 			} catch (InterruptedException e) {

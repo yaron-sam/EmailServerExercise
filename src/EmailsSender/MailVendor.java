@@ -60,7 +60,7 @@ public class MailVendor implements MailSender {
 			msg.addHeader("format", "flowed");
 			msg.addHeader("Content-Transfer-Encoding", "8bit");
 
-			msg.setFrom(new InternetAddress(fromEmail, "NoReply-JD"));
+			msg.setFrom(new InternetAddress(fromEmail));
 
 			msg.setSubject(subject, "UTF-8");
 
