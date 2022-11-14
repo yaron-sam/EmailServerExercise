@@ -1,4 +1,4 @@
-package EmailsSender;
+package emailsSender;
 import java.util.Date;
 import java.util.Properties;
 

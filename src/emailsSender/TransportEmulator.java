@@ -1,4 +1,4 @@
-package EmailsSender;
+package emailsSender;
 
 import javax.mail.Address;
 import javax.mail.Message;
