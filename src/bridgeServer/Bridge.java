@@ -13,9 +13,9 @@ import emailsSender.MailVendor;
 public class Bridge {
 
 	private static Bridge instance = null;
-	private MailVendor gmail;
-	private MailVendor walla;
-	private MailVendor yahoo;
+	private MailSender gmail;
+	private MailSender walla;
+	private MailSender yahoo;
 	private HashMap<String, MailSender> vendors;
 
 	private Bridge() {
