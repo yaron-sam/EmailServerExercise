@@ -21,11 +21,13 @@ import bridgeServer.Bridge;
 
 
 public class Server {
+
 	public static void main(String[] args) throws Exception {
 		int port = 8080;
 		HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-		Bridge bridgeServer = Bridge.getInstance();
 		ExecutorService executor = Executors.newCachedThreadPool();
+		
+		Bridge bridgeServer = Bridge.getInstance();
 
 		server.createContext("/mail", request -> {
 			Runnable runnable = () -> {

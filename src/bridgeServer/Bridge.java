@@ -12,7 +12,7 @@ import emailsSender.MailVendor;
  */
 public class Bridge {
 
-	private static Bridge instance = null;
+	private static Bridge instance =  new Bridge();;
 	private MailSender gmail;
 	private MailSender walla;
 	private MailSender yahoo;
@@ -30,15 +30,15 @@ public class Bridge {
 	}
 
 	public static Bridge getInstance() {
-		if (instance == null) {
-			synchronized (Bridge.class) { // synchronized flag that catch all threads that may come and try to
-											// Parallel create the singleton at start.
-				if (instance == null) { // for the two first threads that coming through, the second one will be be
-										// Trapped here.
-					instance = new Bridge();
-				}
-			}
-		}
+//		if (instance == null) {
+//			synchronized (Bridge.class) { // synchronized flag that catch all threads that may come and try to
+//											// Parallel create the singleton at start.
+//				if (instance == null) { // for the two first threads that coming through, the second one will be be
+//										// Trapped here.
+//					instance = new Bridge();
+//				}
+//			}
+//		}
 
 		return instance;
 	}
